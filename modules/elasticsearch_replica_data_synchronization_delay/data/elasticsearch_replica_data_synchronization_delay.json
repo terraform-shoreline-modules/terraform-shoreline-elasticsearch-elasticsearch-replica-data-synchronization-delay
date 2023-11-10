@@ -1,0 +1,202 @@
+{
+  "name": "elasticsearch_replica_data_synchronization_delay",
+  "description": "This incident type refers to a delay in the synchronization of replica data in an Elasticsearch cluster. Elasticsearch is a search engine that allows for real-time search and analysis of data. In a cluster, data is distributed across multiple nodes to improve performance and ensure high availability. Replica data is a copy of the primary data that is stored on a different node in the cluster. The delay in synchronization of replica data can cause inconsistencies in the search results and affect the performance of the cluster. This issue can occur due to various reasons such as network latency, hardware failure, or software bugs.",
+  "params": [
+    {
+      "name": "ELASTICSEARCH_ENDPOINT",
+      "value": ""
+    },
+    {
+      "name": "INDEX_NAME",
+      "value": ""
+    },
+    {
+      "name": "DESIRED_SHARD_ALLOCATION",
+      "value": ""
+    },
+    {
+      "name": "DESIRED_THREAD_POOL_SIZE",
+      "value": ""
+    },
+    {
+      "name": "ELASTICSEARCH_NODE_IP",
+      "value": ""
+    },
+    {
+      "name": "REPLICA_SHARD_NAME",
+      "value": ""
+    },
+    {
+      "name": "DESIRED_HEAP_SIZE",
+      "value": ""
+    },
+    {
+      "name": "PATH_TO_ELASTICSEARCH_CONFIG_FILE",
+      "value": ""
+    },
+    {
+      "name": "HOST_NAME",
+      "value": ""
+    },
+    {
+      "name": "K8S_CLUSTER_NAME",
+      "value": ""
+    },
+    {
+      "name": "NAMESPACE",
+      "value": ""
+    }
+  ],
+  "cells": [
+    {
+      "name": "cell_1",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## Elasticsearch replica data synchronization delay\nThis incident type refers to a delay in the synchronization of replica data in an Elasticsearch cluster. Elasticsearch is a search engine that allows for real-time search and analysis of data. In a cluster, data is distributed across multiple nodes to improve performance and ensure high availability. Replica data is a copy of the primary data that is stored on a different node in the cluster. The delay in synchronization of replica data can cause inconsistencies in the search results and affect the performance of the cluster. This issue can occur due to various reasons such as network latency, hardware failure, or software bugs."
+    },
+    {
+      "name": "cell_2",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## Check Elasticsearch cluster health status"
+    },
+    {
+      "name": "cell_3",
+      "type": "OP_LANG",
+      "enabled": true,
+      "content": "(host | host_name=$HOST_NAME) union (pod | k8s_cluster_name=$K8S_CLUSTER_NAME | namespace=$NAMESPACE) | `curl -s ${ELASTICSEARCH_ENDPOINT}/_cluster/health?pretty`"
+    },
+    {
+      "name": "cell_4",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## List all Elasticsearch nodes in the cluster"
+    },
+    {
+      "name": "cell_5",
+      "type": "OP_LANG",
+      "enabled": true,
+      "content": "(host | host_name=$HOST_NAME) union (pod | k8s_cluster_name=$K8S_CLUSTER_NAME | namespace=$NAMESPACE) | `curl -s ${ELASTICSEARCH_ENDPOINT}/_cat/nodes?v`"
+    },
+    {
+      "name": "cell_6",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## Check the status of Elasticsearch indices"
+    },
+    {
+      "name": "cell_7",
+      "type": "OP_LANG",
+      "enabled": true,
+      "content": "(host | host_name=$HOST_NAME) union (pod | k8s_cluster_name=$K8S_CLUSTER_NAME | namespace=$NAMESPACE) | `curl -s ${ELASTICSEARCH_ENDPOINT}/_cat/indices?v`"
+    },
+    {
+      "name": "cell_8",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## Check the number of replicas for each Elasticsearch index"
+    },
+    {
+      "name": "cell_9",
+      "type": "OP_LANG",
+      "enabled": true,
+      "content": "(host | host_name=$HOST_NAME) union (pod | k8s_cluster_name=$K8S_CLUSTER_NAME | namespace=$NAMESPACE) | `curl -s ${ELASTICSEARCH_ENDPOINT}/_cat/indices?v&h=index,replica`"
+    },
+    {
+      "name": "cell_10",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## Check the status of Elasticsearch replicas for a specific index"
+    },
+    {
+      "name": "cell_11",
+      "type": "OP_LANG",
+      "enabled": true,
+      "content": "(host | host_name=$HOST_NAME) union (pod | k8s_cluster_name=$K8S_CLUSTER_NAME | namespace=$NAMESPACE) | `curl -s ${ELASTICSEARCH_ENDPOINT}/${INDEX_NAME}/_shard_stores`"
+    },
+    {
+      "name": "cell_12",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## Check the status of Elasticsearch shards for a specific index"
+    },
+    {
+      "name": "cell_13",
+      "type": "OP_LANG",
+      "enabled": true,
+      "content": "(host | host_name=$HOST_NAME) union (pod | k8s_cluster_name=$K8S_CLUSTER_NAME | namespace=$NAMESPACE) | `curl -s ${ELASTICSEARCH_ENDPOINT}/${INDEX_NAME}/_cat/shards`"
+    },
+    {
+      "name": "cell_14",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## Check the disk usage of Elasticsearch nodes"
+    },
+    {
+      "name": "cell_15",
+      "type": "OP_LANG",
+      "enabled": true,
+      "content": "(host | host_name=$HOST_NAME) union (pod | k8s_cluster_name=$K8S_CLUSTER_NAME | namespace=$NAMESPACE) | `curl -s ${ELASTICSEARCH_ENDPOINT}/_cat/allocation?v`"
+    },
+    {
+      "name": "cell_16",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## Check the network latency between Elasticsearch nodes"
+    },
+    {
+      "name": "cell_17",
+      "type": "OP_LANG",
+      "enabled": true,
+      "content": "(host | host_name=$HOST_NAME) union (pod | k8s_cluster_name=$K8S_CLUSTER_NAME | namespace=$NAMESPACE) | `ping ${ELASTICSEARCH_NODE_IP}`"
+    },
+    {
+      "name": "cell_18",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## Check the disk usage of Elasticsearch nodes"
+    },
+    {
+      "name": "cell_19",
+      "type": "OP_LANG",
+      "enabled": true,
+      "content": "(host | host_name=$HOST_NAME) union (pod | k8s_cluster_name=$K8S_CLUSTER_NAME | namespace=$NAMESPACE) | `df -h`"
+    },
+    {
+      "name": "cell_20",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## Check the CPU usage of Elasticsearch nodes"
+    },
+    {
+      "name": "cell_21",
+      "type": "OP_LANG",
+      "enabled": true,
+      "content": "(host | host_name=$HOST_NAME) union (pod | k8s_cluster_name=$K8S_CLUSTER_NAME | namespace=$NAMESPACE) | `top`"
+    },
+    {
+      "name": "cell_22",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## If the replica shard synchronization is stuck, try to force a sync or reset the replica shard."
+    },
+    {
+      "name": "cell_23",
+      "type": "OP_LANG",
+      "enabled": true,
+      "content": "host | host_name=$HOST_NAME | invoke_check_replica_sync($INDEX_NAME, $REPLICA_SHARD_NAME)"
+    },
+    {
+      "name": "cell_24",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## Optimize Elasticsearch configuration: Elasticsearch configuration can be optimized for better performance. This includes settings like thread pools, heap size, and shard allocation. Optimizing these settings can help improve the speed of data synchronization."
+    },
+    {
+      "name": "cell_25",
+      "type": "OP_LANG",
+      "enabled": true,
+      "content": "host | host_name=$HOST_NAME | invoke_update_elasticsearch_config($DESIRED_SHARD_ALLOCATION, $DESIRED_THREAD_POOL_SIZE, $DESIRED_HEAP_SIZE, $PATH_TO_ELASTICSEARCH_CONFIG_FILE)"
+    }
+  ]
+}
